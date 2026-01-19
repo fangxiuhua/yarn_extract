@@ -1,7 +1,7 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
 
-img = cv.imread('picture/black (171).jpg')
+img = cv.imread('../picture/black (171).jpg')
 cv.imshow('img',img)
 
 if img is None:
