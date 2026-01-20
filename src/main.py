@@ -1,7 +1,7 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
 
-img = cv.imread('../picture/black (171).jpg')
+img = cv.imread('picture/black (172).jpg')
 cv.imshow('img',img)
 
 if img is None:
@@ -12,7 +12,9 @@ blur = cv.GaussianBlur(gray,(5,5),0)
 
 _,binary = cv.threshold(blur,127,255,cv.THRESH_BINARY)
 
-contours , _ = cv.findContours(binary,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)
+# RETR_CCOMP 提取所有轮廓，建立两层层级
+# RETR_EXTERNAL：仅提取最外层轮廓
+contours , _ = cv.findContours(binary,cv.RETR_CCOMP,cv.CHAIN_APPROX_SIMPLE)
 
 img_contour = cv.drawContours(img.copy(),contours,-1,(0,255,0),2)
 
