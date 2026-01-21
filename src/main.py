@@ -47,10 +47,15 @@ for img_path in imgs_paths:
     # 圆心的位置
     cv.circle(img_contour,center,10,color_point,-1)
 
+    # 按照轮廓，提取纱线
+    mask = np.zeros(gray.shape,dtype=np.uint8)
+    # 淹模为单通道8位图像
+    cv.drawContours(mask,[max_contour],-1,255,-1)
+    result = cv.bitwise_and(img,img,mask=mask)
+
     plt.figure(figsize=(6,6))
-    plt.imshow(cv.cvtColor(img_contour,cv.COLOR_BGR2RGB))
+    plt.imshow(cv.cvtColor(result,cv.COLOR_BGR2RGB))
     plt.title(img_path)
     plt.axis("off")
     plt.show()
     plt.close()
-
