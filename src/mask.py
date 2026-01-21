@@ -4,17 +4,7 @@ from jinja2.nodes import Continue
 
 
 def extract_ring(img, binary):
-    """
-    从二值图像中提取圆环区域
-
-    参数：
-        img    : 原始彩色图像 (BGR)
-        binary : 二值图像 (uint8, 0/255)
-
-    返回：
-        result : 提取出的圆环彩色图
-        mask   : 圆环掩模（单通道）
-    """
+    """从二值图像中提取圆环区域"""
 
     # 1. 查找轮廓及层级
     contours, hierarchy = cv.findContours(binary, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
@@ -24,7 +14,7 @@ def extract_ring(img, binary):
 
     hierarchy = hierarchy[0]
 
-    # 2. 找最大外轮廓（父轮廓）
+    # 2. 找最大外轮廓
     max_outer_area = 0
     outer_idx = -1
 
@@ -51,17 +41,23 @@ def extract_ring(img, binary):
                 max_inner_area = area
                 inner_idx = i
 
+
+    # 拟合外圆
+    (xo, yo), ro = cv.minEnclosingCircle(contours[outer_idx])
+
+    # 拟合内圆
+    (xi, yi), ri = cv.minEnclosingCircle(contours[inner_idx])
     # 4. 构建圆环掩模
     mask = np.zeros(binary.shape, dtype=np.uint8)
 
     # 填充外轮廓
-    cv.drawContours(mask, [contours[outer_idx]], -1, 255, -1)
+    cv.circle(mask, (int(xo), int(yo)), int(ro), 255, -1)
 
-    # 挖掉内轮廓（如果存在）
+    # 挖掉内轮廓
     if inner_idx != -1:
-        cv.drawContours(mask, [contours[inner_idx]], -1, 0, -1)
+        cv.circle(mask, (int(xi), int(yi)), int(ri), 0, -1)
 
     # 5. 用 mask 提取圆环
     result = cv.bitwise_and(img, img, mask=mask)
 
-    return result, mask
+    return result,xo,yo

@@ -26,10 +26,11 @@ def main():
         # 生成二值图
         _,binary = cv.threshold(blur,127,255,cv.THRESH_BINARY)
 
-        # RETR_CCOMP 提取所有轮廓，建立两层层级
-        contours , hierarchy = cv.findContours(binary,cv.RETR_CCOMP,cv.CHAIN_APPROX_SIMPLE)
+        result,xo,yo= mk.extract_ring(img, binary)
 
-        result, mask = mk.extract_ring(img, binary)
+        color_point = (0,0,255)
+
+        cv.circle(result,(int(xo),int(yo)),10,color_point,-1)
 
         plt.figure(figsize=(6,6))
         plt.imshow(cv.cvtColor(result,cv.COLOR_BGR2RGB))
