@@ -1,9 +1,8 @@
 import  cv2 as cv
 import  numpy as np
-from jinja2.nodes import Continue
+from cone_yarn import yarn
 
-
-def extract_ring(img, binary):
+def detect_yarn(binary):
     """从二值图像中提取圆环区域"""
 
     # 1. 查找轮廓及层级
@@ -41,7 +40,6 @@ def extract_ring(img, binary):
                 max_inner_area = area
                 inner_idx = i
 
-
     # 拟合外圆
     (xo, yo), ro = cv.minEnclosingCircle(contours[outer_idx])
 
@@ -57,7 +55,10 @@ def extract_ring(img, binary):
     if inner_idx != -1:
         cv.circle(mask, (int(xi), int(yi)), int(ri), 0, -1)
 
-    # 5. 用 mask 提取圆环
-    result = cv.bitwise_and(img, img, mask=mask)
-
-    return result,xo,yo
+    return yarn(
+        center_in = (int(xi), int(yi)),
+        center_out = (int(xo), int(yo)),
+        ri=int(ri),
+        ro=int(ro),
+        mask=mask
+    )

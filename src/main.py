@@ -1,7 +1,7 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
-import numpy as np
 import mask as mk
+
 
 def main():
     imgs_paths = [
@@ -22,17 +22,18 @@ def main():
 
         gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
         blur = cv.GaussianBlur(gray,(5,5),0)
-
         # 生成二值图
         _,binary = cv.threshold(blur,127,255,cv.THRESH_BINARY)
 
-        result,xo,yo= mk.extract_ring(img, binary)
+        yarn = mk.detect_yarn(binary)
 
-        color_point = (0,0,255)
+        if yarn is None:
+            print("未读取到类")
+            continue 
 
-        cv.circle(result,(int(xo),int(yo)),10,color_point,-1)
+        img_ext = yarn.extract(img)    
+        result = yarn.Circle2Rectangle(img_ext)
 
-        plt.figure(figsize=(6,6))
         plt.imshow(cv.cvtColor(result,cv.COLOR_BGR2RGB))
         plt.title(img_path)
         plt.axis("off")
