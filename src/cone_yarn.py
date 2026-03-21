@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 import math
 
-class yarn:
+class Yarn:
     def __init__(self, center_in, center_out, ri, ro, mask):
       self.center_in = center_in
       self.center_out = center_out
@@ -11,9 +11,13 @@ class yarn:
       self.mask = mask
 
     def extract(self,img):
+       # 提取环形区域
        return cv.bitwise_and(img, img, mask=self.mask)
     
     def Circle2Rectangle(self, img):
+        """
+        将圆环区域按极坐标展开为矩形
+        """
         cx,cy = self.center_out
         radius_width = self.ro - self.ri
 
@@ -36,6 +40,7 @@ class yarn:
         return rect_img
        
     def draw(self, img, thickness=2):
+        # 在原图上绘制内圆和外圆中心
         vis = img.copy()
         cv.circle(vis, self.center_out, self.ro, (0, 255, 0), thickness)
         cv.circle(vis, self.center_in, self.ri, (0, 255, 0), thickness)
