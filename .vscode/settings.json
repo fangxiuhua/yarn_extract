@@ -1,3 +1,4 @@
 {
-    "git.timeline.showUncommitted": true
+    "git.timeline.showUncommitted": true,
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe"
 }
